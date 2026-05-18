@@ -9,27 +9,37 @@ export default function AIAnalysisPage() {
   const [analysis, setAnalysis] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
-  // Funcția care vorbește cu Gemini
   const analyzeImage = async (base64Image: string) => {
     setLoading(true);
+    setAnalysis(''); // Curățăm textul vechi
     try {
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      // Încercăm modelul "gemini-1.5-flash" (fără latest) sau "gemini-pro-vision"
+      const model = genAI.getGenerativeModel({ 
+  model: "gemini-3-flash-preview" // Numele exact pentru varianta Preview din poza ta
+});
+      const prompt = "Analizează această imagine ca un expert fitness. Oferă: 1. Postură, 2. Mușchi, 3. Sfat. Răspunde scurt în română.";
 
-      const prompt = "Ești un expert în fitness și postură. Analizează această imagine și oferă: 1. Observații despre postură, 2. Grupe musculare vizibile, 3. Un sfat rapid de antrenament. Răspunde în limba română, scurt și motivant.";
-
-      // Curățăm string-ul base64 pentru Gemini
       const imageData = base64Image.split(',')[1];
       
-      const result = await model.generateContent([
-        prompt,
-        { inlineData: { data: imageData, mimeType: "image/jpeg" } }
-      ]);
+      const parts = [
+        { text: prompt },
+        {
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: imageData
+          }
+        }
+      ];
 
-      setAnalysis(result.response.text());
-    } catch (error) {
-      console.error(error);
-      setAnalysis("Ups! Ceva n-a mers bine cu creierul AI. Verifică cheia API.");
+      const result = await model.generateContent(parts);
+      const response = await result.response;
+      setAnalysis(response.text());
+      
+    } catch (error: any) {
+      console.error("Eroare detaliată:", error);
+      setAnalysis(`Eroare: ${error.message || "Nu am putut contacta AI-ul."}`);
     }
     setLoading(false);
   };
