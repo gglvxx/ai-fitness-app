@@ -2,6 +2,7 @@
 import React from 'react';
 import { Dumbbell, Utensils, Camera, ArrowRight } from 'lucide-react';
 
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white font-sans">
