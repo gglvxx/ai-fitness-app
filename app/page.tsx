@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Dumbbell, Utensils, Camera, ArrowRight } from 'lucide-react';
-
+import Link from 'next/link'; // Importăm Link pentru navigare
 
 export default function LandingPage() {
   return (
@@ -9,11 +9,18 @@ export default function LandingPage() {
       {/* Header */}
       <nav className="flex justify-between items-center p-6 border-b border-gray-800">
         <div className="text-2xl font-bold tracking-tighter text-blue-500">AI MORPH</div>
-        <div className="space-x-4">
-          <button className="text-sm font-medium hover:text-blue-400 transition">Log In</button>
-          <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-bold transition">
-            Sign Up
-          </button>
+        <div className="space-x-4 flex items-center">
+          {/* Butonul de Log In */}
+          <Link href="/login" className="text-sm font-medium hover:text-blue-400 transition">
+            Log In
+          </Link>
+          
+          {/* Butonul de Sign Up */}
+          <Link href="/login">
+            <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-bold transition">
+              Sign Up
+            </button>
+          </Link>
         </div>
       </nav>
 
@@ -25,9 +32,13 @@ export default function LandingPage() {
         <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
           Singura platformă care combină nutriția, antrenamentul și analiza vizuală AI pentru a-ți sculpta corpul dorit.
         </p>
-        <button className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full font-bold flex items-center mx-auto transition text-lg">
-          Începe Acum <ArrowRight className="ml-2" />
-        </button>
+        
+        {/* Butonul Începe Acum - trimite tot la Login/Register */}
+        <Link href="/login">
+          <button className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full font-bold flex items-center mx-auto transition text-lg group">
+            Începe Acum <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </Link>
       </section>
 
       {/* Features Grid */}
