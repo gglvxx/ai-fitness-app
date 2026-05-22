@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { User, Activity, Target, Save, ArrowLeft, Scale, Ruler, Calendar, Users } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState({
@@ -15,6 +16,17 @@ export default function SettingsPage() {
     training_frequency: '3-4 zile'
   });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      }
+    };
+    checkUser();
+  }, [router]);
 
   useEffect(() => {
     const getProfile = async () => {
@@ -52,6 +64,14 @@ export default function SettingsPage() {
     if (!error) alert("Profil actualizat!");
     else alert("Eroare: " + error.message);
     setLoading(false);
+  };
+  
+ const handleLogout = async () => {
+    const confirmare = window.confirm("Ești sigur că vrei să ieși din cont?");
+    if (confirmare) {
+      await supabase.auth.signOut();
+      router.push('/login');
+    }
   };
 
   return (
@@ -165,6 +185,12 @@ export default function SettingsPage() {
             className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/10 active:scale-95"
           >
             {loading ? "Se salvează..." : <><Save size={20} /> Salvează Preferințele</>}
+          </button>
+          <button 
+            onClick={handleLogout}
+            className="w-full mt-2 py-3 text-gray-500 hover:text-red-500 text-sm font-medium transition-colors rounded-xl hover:bg-red-500/5"
+          >
+            Ieșire din cont (Log Out)
           </button>
         </div>
       </div>

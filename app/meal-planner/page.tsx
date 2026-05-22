@@ -4,12 +4,25 @@ import { Utensils, Sparkles, ArrowLeft, Loader2, Apple, History } from 'lucide-r
 import Link from 'next/link';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function MealPlannerPage() {
   const [input, setInput] = useState('');
   const [plan, setPlan] = useState('');
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // Dacă nu e logat, îl trimitem la login
+        router.push('/login');
+      }
+    };
+    checkUser();
+  }, [router]);
 
   const fetchHistory = async () => {
     try {
